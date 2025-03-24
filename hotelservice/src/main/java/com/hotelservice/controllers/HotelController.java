@@ -23,7 +23,7 @@ import java.util.List;
 
     @GetMapping("/{id}")
     public ResponseEntity<Hotel> getHotel(@PathVariable("id") String id){
-        return new ResponseEntity<>(hotelService.getHotel(id),HttpStatus.FOUND);
+        return new ResponseEntity<>(hotelService.getHotel(id),HttpStatus.OK);
     }
 
     @GetMapping

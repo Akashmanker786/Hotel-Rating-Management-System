@@ -4,6 +4,7 @@ import com.userservice.entity.Hotel;
 import com.userservice.entity.Rating;
 import com.userservice.entity.User;
 import com.userservice.exceptions.ResourceNotFoundExp;
+import com.userservice.extenal_services.MyFeignClient;
 import com.userservice.repositories.UserRepo;
 import com.userservice.service.UserService;
 import org.slf4j.Logger;
@@ -25,6 +26,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     RestTemplate restTemplate;
+
+    @Autowired
+    MyFeignClient myFeignClient;
 
     private Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
@@ -63,8 +67,10 @@ public class UserServiceImpl implements UserService {
 
         List<Rating> ratingWithHotelList = RatingsList.stream().map(rating -> {
             //        calling api
-            ResponseEntity<Hotel> forEntity = restTemplate.getForEntity("http://HOTEL-SERVICE/hotel/"+rating.getHotelId(), Hotel.class);
-            Hotel hotel = forEntity.getBody();
+//            ResponseEntity<Hotel> forEntity = restTemplate.getForEntity("http://HOTEL-SERVICE/hotel/"+rating.getHotelId(), Hotel.class);
+//            Hotel hotel = forEntity.getBody();    Now using feign client
+
+            Hotel hotel = myFeignClient.getHotel(rating.getHotelId());
             rating.setHotel(hotel);
             return rating;
         }).collect(Collectors.toList());
